@@ -1,2 +1,3 @@
-# Edge-Based-Hardware-Interface-for-Hyper-Local-Environmental-UV-Sensor-Monitoring
-This project is a hardware-software system that connects physical weather and UV sensors directly to a mobile processor to calculate real-time skin protection alerts locally on the device.
+This project is a hardware-software system that connects physical weather and UV sensors directly to a mobile processor to calculate real-time skin protection alerts locally on the device. 
+Instead of pulling generic data from the internet, the application communicates directly with the physical hardware components using low-level computer architecture protocols like buses and Analog-to-Digital Converters (ADCs). 
+To save the mobile device's battery life, the system uses an efficient hardware-interrupt design, keeping the heavy main CPU in a low-power sleep state until the sensors detect a dangerous environmental threshold that requires immediate processing. 
