@@ -1,0 +1,1558 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Skin & Hair Sandbox Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            user-select: none;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        body {
+            /* Animated cosmetics gradient background */
+            background: linear-gradient(-45deg, #DA1884, #E21683, #9400D3, #BA55D3);
+            background-size: 400% 400%;
+            animation: gradientAnim 20s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #ffffff;
+            overflow-y: auto; 
+        }
+
+        @keyframes gradientAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphic Container */
+        .app-wrapper {
+            display: flex;
+            flex-direction: row;
+            background: rgba(226, 22, 131, 0.2);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid #FFD700; /* Gold border */
+            border-radius: 24px;
+            width: 100%;
+            max-width: 1200px;
+            height: 85vh; 
+            min-height: 580px; 
+            max-height: 800px;
+            box-shadow: 0 20px 50px rgba(148, 0, 211, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Form Controls Panel (Left side) */
+        .panel {
+            width: 45%;
+            height: 100%;
+            padding: 24px 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid rgba(255, 215, 0, 0.4);
+            position: relative;
+            background: rgba(148, 0, 211, 0.25);
+            overflow-y: auto; 
+        }
+
+        /* Custom scrollbar for left panel */
+        .panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .panel::-webkit-scrollbar-track {
+            background: rgba(148, 0, 211, 0.1);
+        }
+        .panel::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 3px;
+        }
+
+        /* Toy Engine Viewport (Right side) */
+        .sandbox {
+            width: 55%;
+            height: 100%;
+            position: relative;
+            background: rgba(226, 22, 131, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Progress Steps Stepper Indicator */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed rgba(255, 215, 0, 0.3);
+        }
+
+        .stepper-step {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stepper-step.active {
+            color: #FFD700;
+        }
+
+        /* Page/Step Transitions */
+        .step {
+            display: none;
+            flex-direction: column;
+            height: calc(100% - 50px); 
+            opacity: 0;
+            transform: scale(0.98);
+            animation: paneIn 0.4s ease forwards;
+        }
+
+        .step.active {
+            display: flex;
+        }
+
+        @keyframes paneIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h2 {
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #FFD700; /* Gold border accent */
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(255,215,0,0.2);
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+            color: #ffec8c; /* Soft gold label text */
+        }
+
+        /* Inputs styled strictly with shades of pink/purple and gold accents */
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(186, 85, 211, 0.4); /* BA55D3 base */
+            border: 1px solid rgba(255, 215, 0, 0.6); /* Gold border */
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #FFD700;
+            background: rgba(226, 22, 131, 0.6); /* E21683 focus */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        select option {
+            background-color: #9400D3;
+            color: #ffffff;
+        }
+
+        /* Toggle Links for Auth Views */
+        .auth-toggle-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #ffec8c;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .auth-toggle-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        /* Flex wrap utility for Auth options */
+        .auth-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        /* OTP Digit Box Container */
+        .otp-container {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .otp-input-field {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0;
+            padding: 10px 0;
+        }
+
+        /* Simulated Notifications Toast */
+        .notification-toast {
+            position: absolute;
+            top: -100px;
+            left: 10%;
+            right: 10%;
+            background: rgba(255, 215, 0, 0.95);
+            color: #9400D3;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .notification-toast.show {
+            transform: translateY(120px);
+        }
+
+        /* Gender selector layout */
+        .gender-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .gender-card {
+            background: rgba(148, 0, 211, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .gender-card.selected {
+            background: #FFD700;
+            color: #9400D3;
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Checkbox Layout & Aesthetic styling */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toy-check {
+            background: rgba(148, 0, 211, 0.3); 
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .toy-check:hover {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.15);
+        }
+
+        .toy-check input {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #FFD700;
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+        .toy-check input:checked {
+            background: #FFD700;
+        }
+        .toy-check input:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #9400D3;
+            font-size: 12px;
+            font-weight: bold;
+            top: -3px;
+            left: 2px;
+        }
+
+        .word-count {
+            text-align: right;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+        }
+
+        /* Dynamic, non-overflowing sticky action button layout */
+        .btn-layout {
+            margin-top: auto; 
+            display: flex;
+            gap: 15px;
+            padding-top: 20px;
+            flex-shrink: 0; 
+        }
+
+        /* Gold and pink styling for buttons */
+        button {
+            padding: 12px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 30px;
+            cursor: pointer;
+            border: none;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+
+        button.primary {
+            background: #FFD700;
+            color: #9400D3;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+        button.primary:hover {
+            background: #ffffff;
+            color: #E21683;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+        }
+
+        button.secondary {
+            background: transparent;
+            color: #FFD700;
+            border: 2px solid #FFD700;
+        }
+        button.secondary:hover {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Sandbox Tool Controls Header */
+        .sandbox-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(148, 0, 211, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            padding: 15px;
+            border-radius: 14px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .toy-slider {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .toy-slider label {
+            font-size: 9px;
+            margin-bottom: 4px;
+            color: #ffec8c;
+        }
+        .toy-slider input[type="range"] {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+        }
+        .toy-slider input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #FFD700;
+            cursor: pointer;
+        }
+
+        .error-lbl {
+            color: #FFD700;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Dashboard and Routine Display Styles */
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            color: #ffffff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: rgba(218, 24, 132, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 4px;
+        }
+
+        .stat-item span:first-child {
+            color: #ffec8c;
+        }
+
+        .advice-box {
+            background: rgba(148, 0, 211, 0.3);
+            border: 1px solid #FFD700;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 12px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .routine-card {
+            background: rgba(186, 85, 211, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .routine-card h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffec8c;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 5px;
+        }
+
+        .routine-item {
+            margin-bottom: 8px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .routine-item strong {
+            color: #FFD700;
+            display: block;
+            font-size: 12px;
+        }
+
+        .lip-balm-warning {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 11px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lip-balm-warning::before {
+            content: '💋';
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification system for simulated OTPs -->
+    <div id="simulated-notification" class="notification-toast">
+        <span>🔔</span>
+        <span id="notification-message">Your OTP Code is: 123456</span>
+    </div>
+
+    <div class="app-wrapper">
+        <!-- LEFT PANEL: Interactive Inputs & Routines Dashboard -->
+        <div class="panel" id="scrollable-panel">
+            
+            <!-- Step Indicators -->
+            <div class="stepper">
+                <div class="stepper-step active" id="step-lbl-1">Sign In</div>
+                <div class="stepper-step" id="step-lbl-2">Bio Profile</div>
+                <div class="stepper-step" id="step-lbl-3">Hair Topology</div>
+                <div class="stepper-step" id="step-lbl-4">Skin Topology</div>
+                <div class="stepper-step" id="step-lbl-5">Dashboard</div>
+            </div>
+            
+            <!-- Step 1: Authentication View (Sign In / Sign Up / Forgot / OTP sub-views) -->
+            <div class="step active" id="step1">
+                
+                <!-- SUB-VIEW: SIGN IN -->
+                <div id="auth-signin-view">
+                    <h2>Sign In</h2>
+                    <div class="form-group">
+                        <label>Gmail Account</label>
+                        <input type="email" id="email-signin" placeholder="identity@gmail.com" value="mmmmirra23@gmail.com">
+                        <div class="error-lbl" id="email-signin-error">Must be a valid @gmail.com account</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password-signin" placeholder="••••••••" value="securePass123">
+                        <div class="error-lbl" id="password-signin-error">Please enter a valid password (min 6 characters)</div>
+                    </div>
+                    <div class="auth-options">
+                        <a class="auth-toggle-link" onclick="toggleAuthView('signup')">Don't have an account? Sign Up</a>
+                        <a class="auth-toggle-link" onclick="toggleAuthView('forgot')">Forgot Password?</a>
+                    </div>
+                    <div class="btn-layout">
+                        <button class="primary" onclick="handleSignIn()">Sign In</button>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW: SIGN UP -->
+                <div id="auth-signup-view" style="display: none;">
+                    <h2>Sign Up</h2>
+                    <div class="form-group">
+                        <label>Gmail Account</label>
+                        <input type="email" id="email-signup" placeholder="identity@gmail.com">
+                        <div class="error-lbl" id="email-signup-error">Must be a valid @gmail.com account</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password-signup" placeholder="••••••••">
+                        <div class="error-lbl" id="password-signup-error">Minimum 6 characters required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="password-signup-confirm" placeholder="••••••••">
+                        <div class="error-lbl" id="password-signup-confirm-error">Passwords must match</div>
+                    </div>
+                    <div class="auth-options">
+                        <a class="auth-toggle-link" onclick="toggleAuthView('signin')">Already have an account? Sign In</a>
+                    </div>
+                    <div class="btn-layout">
+                        <button class="primary" onclick="handleSignUp()">Create Account</button>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW: FORGOT PASSWORD -->
+                <div id="auth-forgot-view" style="display: none;">
+                    <h2>Reset Password</h2>
+                    <div class="form-group">
+                        <label>Enter Registered Gmail</label>
+                        <input type="email" id="email-forgot" placeholder="identity@gmail.com">
+                        <div class="error-lbl" id="email-forgot-error">Must be a valid @gmail.com account</div>
+                    </div>
+                    <div class="auth-options">
+                        <a class="auth-toggle-link" onclick="toggleAuthView('signin')">Remembered? Return to Sign In</a>
+                    </div>
+                    <div class="btn-layout">
+                        <button class="primary" onclick="handleForgotPassword()">Send Reset Instructions</button>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW: OTP VERIFICATION -->
+                <div id="auth-otp-view" style="display: none;">
+                    <h2>OTP Verification</h2>
+                    <div class="form-group">
+                        <p style="font-size: 13px; color: #ffec8c; margin-bottom: 15px; line-height: 1.4;">
+                            A One-Time Password (OTP) has been sent to your registered Gmail address. Please enter it below.
+                        </p>
+                        <label>Verification Code</label>
+                        <div class="otp-container">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-1" oninput="moveToNextOTP(this, 'otp-2')" onkeydown="moveBackOTP(event, 'otp-1')">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-2" oninput="moveToNextOTP(this, 'otp-3')" onkeydown="moveBackOTP(event, 'otp-1')">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-3" oninput="moveToNextOTP(this, 'otp-4')" onkeydown="moveBackOTP(event, 'otp-2')">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-4" oninput="moveToNextOTP(this, 'otp-5')" onkeydown="moveBackOTP(event, 'otp-3')">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-5" oninput="moveToNextOTP(this, 'otp-6')" onkeydown="moveBackOTP(event, 'otp-4')">
+                            <input type="text" class="otp-input-field" maxlength="1" id="otp-6" oninput="moveToNextOTP(this, '')" onkeydown="moveBackOTP(event, 'otp-5')">
+                        </div>
+                        <div class="error-lbl" id="otp-error">Invalid OTP code. Please verify again.</div>
+                    </div>
+                    <div class="auth-options">
+                        <a class="auth-toggle-link" onclick="resendOTP()">Resend OTP Code</a>
+                    </div>
+                    <div class="btn-layout">
+                        <button class="secondary" onclick="toggleAuthView('signin')">Cancel</button>
+                        <button class="primary" onclick="verifyOTPCode()">Verify OTP</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Step 2: Personal Details & Gender (Post-Login) -->
+            <div class="step" id="step2">
+                <h2>Bio Profile</h2>
+                <div class="form-group">
+                    <label>Select Gender</label>
+                    <div class="gender-grid">
+                        <div class="gender-card" id="gender-male" onclick="selectGender('male')">Male</div>
+                        <div class="gender-card" id="gender-female" onclick="selectGender('female')">Female</div>
+                    </div>
+                    <div class="error-lbl" id="gender-error">Please select your gender</div>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullname" placeholder="Evelyn Vane">
+                    <div class="error-lbl" id="name-error">Please enter your full name</div>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob" value="2000-01-01">
+                    <div class="error-lbl" id="dob-error">Please select a valid date</div>
+                </div>
+                <div class="form-group">
+                    <label>Birthplace</label>
+                    <input type="text" id="birthplace" placeholder="Vibrant City">
+                    <div class="error-lbl" id="birthplace-error">Please specify your birthplace</div>
+                </div>
+                <div class="btn-layout">
+                    <button class="primary" onclick="goStep3()">Generate</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Hair and Scalp Matrix -->
+            <div class="step" id="step3">
+                <h2>Hair Topology</h2>
+                
+                <div class="form-group">
+                    <label>Hair Type</label>
+                    <select id="hairtype">
+                        <option value="" disabled selected>Identify Hair Pattern</option>
+                        <option value="Straight">Straight</option>
+                        <option value="Wavy">Wavy</option>
+                        <option value="Curly">Curly</option>
+                    </select>
+                    <div class="error-lbl" id="hairtype-error">Please select your hair type</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Scalp Type</label>
+                    <select id="scalptype">
+                        <option value="" disabled selected>Identify Scalp Moisture</option>
+                        <option value="Dry">Dry Scalp</option>
+                        <option value="Oily">Oily Scalp</option>
+                    </select>
+                    <div class="error-lbl" id="scalptype-error">Please select your scalp type</div>
+                </div>
+
+                <div class="btn-layout">
+                    <button class="secondary" onclick="moveStep('step2')">Back</button>
+                    <button class="primary" onclick="goStep4()">Define Topology</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Skin parameters -->
+            <div class="step" id="step4">
+                <h2>Skin Topology</h2>
+                <div class="form-group">
+                    <label>Skin Type Matrix</label>
+                    <select id="skintype" onchange="spawnSkinNode()">
+                        <option value="" disabled selected>Identify Category</option>
+                        <option value="Normal Skin">Normal Skin</option>
+                        <option value="Dry Skin">Dry Skin</option>
+                        <option value="Oily Skin">Oily Skin</option>
+                        <option value="Combination Skin">Combination Skin</option>
+                        <option value="Sensitive Skin">Sensitive Skin</option>
+                    </select>
+                    <div class="error-lbl" id="skintype-error">Please select your skin type</div>
+                </div>
+                <div class="form-group">
+                    <label>Pathologies & Concerns</label>
+                    <div class="checkbox-grid">
+                        <label class="toy-check"><input type="checkbox" value="Sun Burns" onchange="toggleConcern(this)"> Sun Burns</label>
+                        <label class="toy-check"><input type="checkbox" value="Acne" onchange="toggleConcern(this)"> Acne</label>
+                        <label class="toy-check"><input type="checkbox" value="Pimple Prone" onchange="toggleConcern(this)"> Pimple Prone</label>
+                        <label class="toy-check"><input type="checkbox" value="Hyper Sensitivity" onchange="toggleConcern(this)"> Hyper Sensitivity</label>
+                        <label class="toy-check"><input type="checkbox" value="Skin Allergies" onchange="toggleConcern(this)"> Any Allergies</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Other Diagnostics (Max 150 Words)</label>
+                    <textarea id="other-allergies" rows="3" placeholder="Log details..." oninput="processWords()"></textarea>
+                    <div class="word-count"><span id="words-left">150</span> words left</div>
+                </div>
+                <div class="btn-layout">
+                    <button class="secondary" onclick="moveStep('step3')">Back</button>
+                    <button class="primary" onclick="finalizeApp()">Execute Sandbox</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Personalized Dashboard -->
+            <div class="step" id="step5">
+                <h2>Dynamic Wellness Dashboard</h2>
+                <div class="dashboard-container" id="dashboard-content" style="max-height: calc(100% - 70px); overflow-y: auto; padding-right: 4px;">
+                    <!-- Dynamic details compiled and populated via Javascript -->
+                </div>
+                <div class="btn-layout" style="margin-top: auto; padding-top: 10px;">
+                    <button class="primary" onclick="resetSandbox()">Start Over</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL: Physics Engine Toy viewport -->
+        <div class="sandbox">
+            <div class="sandbox-ui">
+                <div class="toy-slider">
+                    <label>Gravity</label>
+                    <input type="range" id="grav-slider" min="0" max="1.5" step="0.05" value="0.4">
+                </div>
+                <div class="toy-slider">
+                    <label>Bounciness</label>
+                    <input type="range" id="bounce-slider" min="0.2" max="1" step="0.05" value="0.75">
+                </div>
+            </div>
+            <canvas id="toyCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('toyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = canvas.offsetWidth;
+        let height = canvas.height = canvas.offsetHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+        });
+
+        let gravity = 0.4;
+        let bounciness = 0.75;
+        let nodes = [];
+        let selectedNode = null;
+        let isDragging = false;
+        let mouse = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
+
+        // Color Arrays matching aesthetic brand hex values
+        const elementColors = ['#DA1884', '#E21683', '#9400D3', '#BA55D3'];
+
+        class PhysicsNode {
+            constructor(x, y, radius, label, isStatic = false) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 8;
+                this.vy = (Math.random() - 0.5) * 5;
+                this.radius = radius;
+                this.label = label;
+                this.color = elementColors[Math.floor(Math.random() * elementColors.length)];
+                this.isStatic = isStatic;
+            }
+
+            update() {
+                if (this.isStatic || selectedNode === this) return;
+
+                this.vy += gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wall Collisions
+                if (this.x - this.radius < 0) {
+                    this.x = this.radius;
+                    this.vx *= -bounciness;
+                } else if (this.x + this.radius > width) {
+                    this.x = width - this.radius;
+                    this.vx *= -bounciness;
+                }
+
+                if (this.y - this.radius < 0) {
+                    this.y = this.radius;
+                    this.vy *= -bounciness;
+                } else if (this.y + this.radius > height) {
+                    this.y = height - this.radius;
+                    this.vy *= -bounciness;
+                    this.vx *= 0.98; // Friction on bottom floor
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                
+                // Aesthetic Glass Fill Gradient
+                let gradient = ctx.createRadialGradient(this.x, this.y, this.radius * 0.1, this.x, this.y, this.radius);
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.3, this.color);
+                gradient.addColorStop(1, '#9400D3');
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = selectedNode === this ? 20 : 6;
+                ctx.fill();
+
+                // Golden highlight border
+                ctx.lineWidth = selectedNode === this ? 3 : 1.5;
+                ctx.strokeStyle = '#FFD700';
+                ctx.stroke();
+
+                // Inner label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowBlur = 0; 
+                
+                if (this.label.length > 14) {
+                    ctx.fillText(this.label.substring(0, 12) + '..', this.x, this.y);
+                } else {
+                    ctx.fillText(this.label, this.x, this.y);
+                }
+                ctx.restore();
+            }
+        }
+
+        // Loop Runner
+        function animateEngine() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Synchronize sliders
+            gravity = parseFloat(document.getElementById('grav-slider').value);
+            bounciness = parseFloat(document.getElementById('bounce-slider').value);
+
+            // Handle Node Interactions & collisions
+            for (let i = 0; i < nodes.length; i++) {
+                nodes[i].update();
+                for (let j = i + 1; j < nodes.length; j++) {
+                    handleSphereCollision(nodes[i], nodes[j]);
+                }
+                nodes[i].draw();
+            }
+
+            requestAnimationFrame(animateEngine);
+        }
+
+        function handleSphereCollision(c1, c2) {
+            let dx = c2.x - c1.x;
+            let dy = c2.y - c1.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            let minDist = c1.radius + c2.radius;
+
+            if (distance < minDist) {
+                let overlap = minDist - distance;
+                let nx = dx / distance;
+                let ny = dy / distance;
+
+                // Push apart
+                if (!c1.isStatic && c1 !== selectedNode) {
+                    c1.x -= nx * overlap * 0.5;
+                    c1.y -= ny * overlap * 0.5;
+                }
+                if (!c2.isStatic && c2 !== selectedNode) {
+                    c2.x += nx * overlap * 0.5;
+                    c2.y += ny * overlap * 0.5;
+                }
+
+                // Elastic exchange
+                let kx = c1.vx - c2.vx;
+                let ky = c1.vy - c2.vy;
+                let p = 2 * (nx * kx + ny * ky) / 2;
+
+                if (!c1.isStatic && c1 !== selectedNode) {
+                    c1.vx -= p * nx * bounciness;
+                    c1.vy -= p * ny * bounciness;
+                }
+                if (!c2.isStatic && c2 !== selectedNode) {
+                    c2.vx += p * nx * bounciness;
+                    c2.vy += p * ny * bounciness;
+                }
+            }
+        }
+
+        // Setup dynamic physical environment
+        function spawnInitialNode(label) {
+            let r = Math.random() * 15 + 35;
+            let x = Math.random() * (width - r * 2) + r;
+            let y = Math.random() * (height / 2);
+            nodes.push(new PhysicsNode(x, y, r, label));
+        }
+
+        // Mouse interactions
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+
+            for (let node of nodes) {
+                let dist = Math.sqrt((mouse.x - node.x)**2 + (mouse.y - node.y)**2);
+                if (dist < node.radius) {
+                    selectedNode = node;
+                    isDragging = true;
+                    break;
+                }
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+
+            if (isDragging && selectedNode) {
+                selectedNode.vx = mouse.x - selectedNode.x;
+                selectedNode.vy = mouse.y - selectedNode.y;
+                selectedNode.x = mouse.x;
+                selectedNode.y = mouse.y;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            selectedNode = null;
+        });
+
+        animateEngine();
+
+        // --- STREAMING_CHUNK: Defining Authentication & Profile state machines... ---
+        
+        let userProfile = {
+            email: '',
+            gender: '',
+            fullname: '',
+            dob: '',
+            birthplace: '',
+            hairtype: '',
+            scalptype: '',
+            skintype: '',
+            concerns: [],
+            otherAllergies: ''
+        };
+
+        let generatedOTP = "";
+
+        // UI Toast Notification
+        function showNotification(text) {
+            const toast = document.getElementById('simulated-notification');
+            const msg = document.getElementById('notification-message');
+            msg.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 6000);
+        }
+
+        // View toggle helpers for Step 1
+        function toggleAuthView(targetView) {
+            document.getElementById('auth-signin-view').style.display = 'none';
+            document.getElementById('auth-signup-view').style.display = 'none';
+            document.getElementById('auth-forgot-view').style.display = 'none';
+            document.getElementById('auth-otp-view').style.display = 'none';
+
+            // Reset step label formatting to base login
+            document.getElementById('step-lbl-1').textContent = "Sign In";
+
+            if (targetView === 'signin') {
+                document.getElementById('auth-signin-view').style.display = 'block';
+            } else if (targetView === 'signup') {
+                document.getElementById('auth-signup-view').style.display = 'block';
+            } else if (targetView === 'forgot') {
+                document.getElementById('auth-forgot-view').style.display = 'block';
+            } else if (targetView === 'otp') {
+                document.getElementById('auth-otp-view').style.display = 'block';
+                document.getElementById('step-lbl-1').textContent = "OTP Code";
+            }
+        }
+
+        // Sign In Execution
+        function handleSignIn() {
+            const email = document.getElementById('email-signin').value.trim();
+            const pass = document.getElementById('password-signin').value.trim();
+            const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            let valid = true;
+
+            if (!gmailRegex.test(email)) {
+                document.getElementById('email-signin-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('email-signin-error').style.display = 'none';
+            }
+
+            if (pass.length < 6) {
+                document.getElementById('password-signin-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('password-signin-error').style.display = 'none';
+            }
+
+            if (valid) {
+                userProfile.email = email;
+                initiateOTPProcess();
+            }
+        }
+
+        // Sign Up Execution
+        function handleSignUp() {
+            const email = document.getElementById('email-signup').value.trim();
+            const pass = document.getElementById('password-signup').value.trim();
+            const passConfirm = document.getElementById('password-signup-confirm').value.trim();
+            const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            let valid = true;
+
+            if (!gmailRegex.test(email)) {
+                document.getElementById('email-signup-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('email-signup-error').style.display = 'none';
+            }
+
+            if (pass.length < 6) {
+                document.getElementById('password-signup-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('password-signup-error').style.display = 'none';
+            }
+
+            if (pass !== passConfirm) {
+                document.getElementById('password-signup-confirm-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('password-signup-confirm-error').style.display = 'none';
+            }
+
+            if (valid) {
+                userProfile.email = email;
+                initiateOTPProcess();
+            }
+        }
+
+        // Password Reset Request
+        function handleForgotPassword() {
+            const email = document.getElementById('email-forgot').value.trim();
+            const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+            if (!gmailRegex.test(email)) {
+                document.getElementById('email-forgot-error').style.display = 'block';
+            } else {
+                document.getElementById('email-forgot-error').style.display = 'none';
+                showNotification(`Password reset request sent to ${email}`);
+                setTimeout(() => toggleAuthView('signin'), 1500);
+            }
+        }
+
+        // OTP Generation Trigger
+        function initiateOTPProcess() {
+            // Generate a random 6 digit secure code
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            toggleAuthView('otp');
+            
+            // Trigger simulated visual toast delivery
+            setTimeout(() => {
+                showNotification(`New simulated OTP Code sent: ${generatedOTP}`);
+            }, 800);
+        }
+
+        // Resend OTP process
+        function resendOTP() {
+            // Clear inputs
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp-${i}`).value = "";
+            }
+            document.getElementById(`otp-1`).focus();
+            initiateOTPProcess();
+        }
+
+        // UI handling for dynamic OTP boxes
+        function moveToNextOTP(current, nextFieldId) {
+            if (current.value.length >= 1 && nextFieldId) {
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+
+        function moveBackOTP(event, prevFieldId) {
+            if (event.key === "Backspace" && event.target.value.length === 0) {
+                document.getElementById(prevFieldId).focus();
+            }
+        }
+
+        // OTP code check
+        function verifyOTPCode() {
+            let enteredCode = "";
+            for (let i = 1; i <= 6; i++) {
+                enteredCode += document.getElementById(`otp-${i}`).value;
+            }
+
+            if (enteredCode === generatedOTP && enteredCode !== "") {
+                document.getElementById('otp-error').style.display = 'none';
+                
+                // Spawn logged-in nodes instantly
+                spawnInitialNode(userProfile.email.split('@')[0]);
+                spawnInitialNode("AUTHENTICATED");
+
+                // Proceed to Step 2 (Bio Profile)
+                moveStep('step2');
+            } else {
+                document.getElementById('otp-error').style.display = 'block';
+            }
+        }
+
+        // Set default selected gender state on load
+        selectGender('female');
+
+        function selectGender(gender) {
+            userProfile.gender = gender;
+            document.getElementById('gender-male').classList.remove('selected');
+            document.getElementById('gender-female').classList.remove('selected');
+            document.getElementById('gender-' + gender).classList.add('selected');
+            document.getElementById('gender-error').style.display = 'none';
+        }
+
+        function moveStep(stepId) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+            
+            // Sync stepper labels
+            document.querySelectorAll('.stepper-step').forEach(lbl => lbl.classList.remove('active'));
+            if (stepId === 'step1') document.getElementById('step-lbl-1').classList.add('active');
+            if (stepId === 'step2') document.getElementById('step-lbl-2').classList.add('active');
+            if (stepId === 'step3') document.getElementById('step-lbl-3').classList.add('active');
+            if (stepId === 'step4') document.getElementById('step-lbl-4').classList.add('active');
+            if (stepId === 'step5') document.getElementById('step-lbl-5').classList.add('active');
+
+            // Scroll back to the top of left panel on transitions
+            document.getElementById('scrollable-panel').scrollTop = 0;
+        }
+
+        // Step 2 Proceed Check
+        function goStep3() {
+            const fullname = document.getElementById('fullname').value.trim();
+            const dob = document.getElementById('dob').value;
+            const birthplace = document.getElementById('birthplace').value.trim();
+            let valid = true;
+
+            if (!userProfile.gender) {
+                document.getElementById('gender-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('gender-error').style.display = 'none';
+            }
+
+            if (!fullname) {
+                document.getElementById('name-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('name-error').style.display = 'none';
+            }
+
+            if (!dob) {
+                document.getElementById('dob-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('dob-error').style.display = 'none';
+            }
+
+            if (!birthplace) {
+                document.getElementById('birthplace-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('birthplace-error').style.display = 'none';
+            }
+
+            if (valid) {
+                userProfile.fullname = fullname;
+                userProfile.dob = dob;
+                userProfile.birthplace = birthplace;
+
+                spawnInitialNode(fullname);
+                spawnInitialNode(birthplace);
+                moveStep('step3');
+            }
+        }
+
+        // --- STREAMING_CHUNK: Hair and skin logic integration... ---
+
+        function goStep4() {
+            const hairtype = document.getElementById('hairtype').value;
+            const scalptype = document.getElementById('scalptype').value;
+            let valid = true;
+
+            if (!hairtype) {
+                document.getElementById('hairtype-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('hairtype-error').style.display = 'none';
+            }
+
+            if (!scalptype) {
+                document.getElementById('scalptype-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('scalptype-error').style.display = 'none';
+            }
+
+            if (valid) {
+                userProfile.hairtype = hairtype;
+                userProfile.scalptype = scalptype;
+
+                spawnInitialNode(hairtype + " Hair");
+                spawnInitialNode(scalptype + " Scalp");
+                moveStep('step4');
+            }
+        }
+
+        function spawnSkinNode() {
+            const select = document.getElementById('skintype');
+            if(select.value) {
+                // Filter old categories to avoid piling
+                nodes = nodes.filter(n => n.label !== "Dry Skin" && n.label !== "Oily Skin" && n.label !== "Combination Skin" && n.label !== "Sensitive Skin" && n.label !== "Normal Skin");
+                spawnInitialNode(select.value);
+            }
+        }
+
+        function toggleConcern(checkbox) {
+            if (checkbox.checked) {
+                spawnInitialNode(checkbox.value);
+                userProfile.concerns.push(checkbox.value);
+            } else {
+                nodes = nodes.filter(n => n.label !== checkbox.value);
+                userProfile.concerns = userProfile.concerns.filter(c => c !== checkbox.value);
+            }
+        }
+
+        function processWords() {
+            const ta = document.getElementById('other-allergies');
+            const lbl = document.getElementById('words-left');
+            let words = ta.value.trim().split(/\s+/).filter(w => w.length > 0);
+            
+            if (words.length > 150) {
+                const cuts = words.slice(0, 150).join(" ");
+                ta.value = cuts;
+                words = cuts.split(/\s+/);
+            }
+            lbl.textContent = 150 - words.length;
+            userProfile.otherAllergies = ta.value;
+        }
+
+        function getOptimalWashingFrequency(hair, scalp) {
+            if (scalp === "Dry" && hair === "Curly") {
+                return "1 to 2 times a week is optimal to prevent stripping natural protective oils.";
+            } else if (scalp === "Dry" && hair === "Wavy") {
+                return "2 times a week.";
+            } else if (scalp === "Dry" && hair === "Straight") {
+                return "2 to 3 times a week.";
+            } else if (scalp === "Oily" && hair === "Curly") {
+                return "3 times a week.";
+            } else if (scalp === "Oily" && hair === "Wavy") {
+                return "3 to 4 times a week.";
+            } else if (scalp === "Oily" && hair === "Straight") {
+                return "Daily or every other day (4 to 5 times a week) to manage sebum build-up safely.";
+            }
+            return "2 to 3 times a week.";
+        }
+
+        // Finalize Dashboard Output
+        function finalizeApp() {
+            const skintype = document.getElementById('skintype').value;
+            if(!skintype) {
+                document.getElementById('skintype-error').style.display = 'block';
+                return;
+            }
+            document.getElementById('skintype-error').style.display = 'none';
+            userProfile.skintype = skintype;
+
+            const dashboard = document.getElementById('dashboard-content');
+            
+            // 14 Meteorological Datapoints
+            const weatherMetrics = {
+                uvRadiation: "8.4 (High)",
+                uva: "42 W/m² (Elevated)",
+                uvb: "2.1 W/m² (Moderate)",
+                humidity: "76% (High Humidity)",
+                aqi: "115 (Unhealthy for sensitive groups)",
+                pm25: "38 µg/m³",
+                pm10: "65 µg/m³",
+                co: "0.6 ppm",
+                no2: "18 ppb",
+                so2: "4 ppb",
+                o3: "52 ppb",
+                epaRating: "Moderate Risk",
+                cloudCover: "22%",
+                windSpeed: "14 km/h"
+            };
+
+            // Dynamic environmental warning
+            let environmentalAdvice = "";
+            if (parseFloat(weatherMetrics.uvRadiation) >= 6.0) {
+                environmentalAdvice += "The solar UV radiation is currently strong. Ensure a high SPF sunscreen is reapplied and protective accessories are integrated. ";
+            }
+            if (parseInt(weatherMetrics.humidity) > 70) {
+                environmentalAdvice += "High humidity detected. Lean towards lightweight, non-comedogenic formulations to prevent pore-clogging. Lightweight caps or hats will keep sweat and sun away from sensitive zones.";
+            } else {
+                environmentalAdvice += "Low ambient humidity detected. Reinforce outer moisture barriers to guard against trans-epidermal water loss.";
+            }
+
+            // Products list mapped by Skin Type
+            let products = {
+                facewash: "",
+                moisturizer: "",
+                sunscreen: "",
+                serum: ""
+            };
+
+            if (userProfile.skintype === "Dry Skin") {
+                products.facewash = "CeraVe Hydrating Facial Cleanser (Hyaluronic Acid & Ceramides)";
+                products.moisturizer = "Cetaphil Rich Hydrating Cream (Sweet Almond Oil & Vitamin E)";
+                products.sunscreen = "La Roche-Posay Anthelios SPF 50 Mineral Sunscreen";
+                products.serum = "The Ordinary Hyaluronic Acid 2% + B5";
+            } else if (userProfile.skintype === "Oily Skin") {
+                products.facewash = "La Roche-Posay Toleriane Foaming Gel Cleanser (Niacinamide)";
+                products.moisturizer = "Neutrogena Hydro Boost Water Gel (Hyaluronic Acid Base)";
+                products.sunscreen = "Bioré UV Aqua Rich Watery Essence SPF 50";
+                products.serum = "The Ordinary Niacinamide 10% + Zinc 1%";
+            } else if (userProfile.skintype === "Combination Skin") {
+                products.facewash = "Youth To The People Superfood Cleanser (Kale & Green Tea)";
+                products.moisturizer = "Clinique Dramatically Different Hydrating Jelly";
+                products.sunscreen = "EltaMD UV Clear Broad-Spectrum SPF 46 (Zinc Oxide)";
+                products.serum = "Paula's Choice 2% BHA Liquid Exfoliant (Salicylic Acid)";
+            } else if (userProfile.skintype === "Sensitive Skin") {
+                products.facewash = "Vanicream Gentle Facial Cleanser (Fragrance-Free)";
+                products.moisturizer = "Aveeno Calm + Restore Oat Gel Moisturizer";
+                products.sunscreen = "Supergoop! Unseen Sunscreen SPF 40";
+                products.serum = "KraveBeauty Great Barrier Relief (Tamanu Oil & Ceramides)";
+            } else { // Normal Skin
+                products.facewash = "Kiehl's Ultra Facial Cleanser (Squalane & Avocado Oil)";
+                products.moisturizer = "Kiehl's Ultra Facial Cream (Glacial Glycoprotein)";
+                products.sunscreen = "Innisfree Daily UV Defense Sunscreen SPF 36";
+                products.serum = "Estée Lauder Advanced Night Repair (Peptides)";
+            }
+
+            // Haircare products mapped by Scalp Type
+            let hairProducts = {
+                shampoo: "",
+                conditioner: "",
+                gel: ""
+            };
+
+            if (userProfile.scalptype === "Dry") {
+                hairProducts.shampoo = "Briogeo Scalp Revival Charcoal + Coconut Oil Shampoo";
+                hairProducts.conditioner = "SheaMoisture Raw Shea Butter Deep Treatment Conditioner";
+                hairProducts.gel = "Moroccanoil Styling Gel (Medium Flex Hold)";
+            } else { // Oily scalp
+                hairProducts.shampoo = "Paul Mitchell Tea Tree Special Clarifying Shampoo";
+                hairProducts.conditioner = "Oribe Hair Play Weightless Conditioner";
+                hairProducts.gel = "Eco Style Olive Oil Gel (Maximum Hold)";
+            }
+
+            // Shaving Routine for Male Users
+            let shavingHTML = "";
+            if (userProfile.gender === "male") {
+                shavingHTML = `
+                    <div class="routine-card" style="margin-top: 15px; border-color: #FFD700;">
+                        <h3>Beard & Face Shaving Routine</h3>
+                        <div class="routine-item">
+                            <strong>Step 1: Warm Prep</strong>
+                            Wet facial skin with warm water to expand pores and soften hairs.
+                        </div>
+                        <div class="routine-item">
+                            <strong>Step 2: Aloe Foam Protection</strong>
+                            Apply a generous coat of <em>Gillette PRO Sensitive Shaving Gel (with Aloe Vera)</em> to minimize razor drag.
+                        </div>
+                        <div class="routine-item">
+                            <strong>Step 3: Precision Blade Strokes</strong>
+                            Use a clean, multi-blade razor. Shave carefully in the direction of natural hair growth to minimize irritation.
+                        </div>
+                        <div class="routine-item">
+                            <strong>Step 4: Soothing Cool-Down</strong>
+                            Rinse thoroughly with cold water. Apply a non-alcohol post-shave balm for dermal healing.
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Compile Dashboard Structure
+            dashboard.innerHTML = `
+                <!-- 14 Atmospheric context elements -->
+                <div class="routine-card">
+                    <h3>Atmospheric Matrix Today</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item"><span>UV Index</span><span>${weatherMetrics.uvRadiation}</span></div>
+                        <div class="stat-item"><span>UVA Level</span><span>${weatherMetrics.uva}</span></div>
+                        <div class="stat-item"><span>UVB Level</span><span>${weatherMetrics.uvb}</span></div>
+                        <div class="stat-item"><span>Humidity</span><span>${weatherMetrics.humidity}</span></div>
+                        <div class="stat-item"><span>Air Quality (AQI)</span><span>${weatherMetrics.aqi}</span></div>
+                        <div class="stat-item"><span>PM2.5</span><span>${weatherMetrics.pm25}</span></div>
+                        <div class="stat-item"><span>PM10</span><span>${weatherMetrics.pm10}</span></div>
+                        <div class="stat-item"><span>CO Levels</span><span>${weatherMetrics.co}</span></div>
+                        <div class="stat-item"><span>NO₂ Levels</span><span>${weatherMetrics.no2}</span></div>
+                        <div class="stat-item"><span>SO₂ Levels</span><span>${weatherMetrics.so2}</span></div>
+                        <div class="stat-item"><span>Ozone (O₃)</span><span>${weatherMetrics.o3}</span></div>
+                        <div class="stat-item"><span>EPA Rating</span><span>${weatherMetrics.epaRating}</span></div>
+                        <div class="stat-item"><span>Cloud Cover</span><span>${weatherMetrics.cloudCover}</span></div>
+                        <div class="stat-item"><span>Wind Speed</span><span>${weatherMetrics.windSpeed}</span></div>
+                    </div>
+                </div>
+
+                <!-- Personalized Daily Advice -->
+                <div class="advice-box">
+                    <strong>Personalized Routine for Today:</strong><br>${environmentalAdvice}
+                </div>
+
+                <!-- Skincare Routines -->
+                <div class="routine-card">
+                    <h3>General Skincare Routine</h3>
+                    <div class="routine-item">
+                        <strong>AM Morning Routine</strong>
+                        1. Wash with <em>${products.facewash}</em>.<br>
+                        2. Apply <em>${products.moisturizer}</em> to clean skin.<br>
+                        3. Complete with <em>${products.sunscreen}</em>.
+                    </div>
+                    <div class="routine-item">
+                        <strong>PM Night Routine</strong>
+                        1. Wash with <em>${products.facewash}</em>.<br>
+                        2. Apply <em>${products.serum}</em> for targeting concerns.<br>
+                        3. Lock in with <em>${products.moisturizer}</em>.
+                    </div>
+                    <div class="lip-balm-warning">Don't forget your lip balm!</div>
+                </div>
+
+                <!-- Shaving option -->
+                ${shavingHTML}
+
+                <!-- Haircare routine -->
+                <div class="routine-card">
+                    <h3>Haircare & Scalp Routine</h3>
+                    <div class="routine-item">
+                        <strong>Shampoo Recommendation</strong>
+                        Cleanse using <em>${hairProducts.shampoo}</em>.
+                    </div>
+                    <div class="routine-item">
+                        <strong>Conditioner Recommendation</strong>
+                        Restore moisture using <em>${hairProducts.conditioner}</em>.
+                    </div>
+                    <div class="routine-item">
+                        <strong>Styling Gel Recommendation</strong>
+                        Apply <em>${hairProducts.gel}</em>.
+                    </div>
+                    <div class="routine-item" style="border-top: 1px dashed rgba(255, 215, 0, 0.2); padding-top: 8px;">
+                        <strong>Wash Frequency Recommendation</strong>
+                        Based on your ${userProfile.hairtype} Hair and ${userProfile.scalptype} Scalp: <strong>${getOptimalWashingFrequency(userProfile.hairtype, userProfile.scalptype)}</strong>
+                    </div>
+                </div>
+            `;
+
+            // Reset engine with personalized nodes
+            nodes = []; 
+            spawnInitialNode("Lip Balm");
+            spawnInitialNode(userProfile.skintype);
+            spawnInitialNode(userProfile.hairtype);
+            spawnInitialNode(userProfile.scalptype + " Scalp");
+            if(userProfile.gender === "male") {
+                spawnInitialNode("Shaving Gel");
+            }
+            spawnInitialNode("Moisturizer");
+            spawnInitialNode("Sunscreen");
+            spawnInitialNode("Serum");
+            spawnInitialNode("Facewash");
+
+            // Final golden payload badge
+            let finalBlock = new PhysicsNode(width / 2, 50, 75, "CONTINUED");
+            finalBlock.color = "#FFD700"; 
+            nodes.push(finalBlock);
+
+            moveStep('step5');
+        }
+
+        function resetSandbox() {
+            // Restore clean state representation
+            userProfile = {
+                email: '',
+                gender: '',
+                fullname: '',
+                dob: '',
+                birthplace: '',
+                hairtype: '',
+                scalptype: '',
+                skintype: '',
+                concerns: [],
+                otherAllergies: ''
+            };
+
+            generatedOTP = "";
+
+            // Purge text inputs
+            document.getElementById('email-signin').value = '';
+            document.getElementById('password-signin').value = '';
+            document.getElementById('email-signup').value = '';
+            document.getElementById('password-signup').value = '';
+            document.getElementById('password-signup-confirm').value = '';
+            document.getElementById('fullname').value = '';
+            document.getElementById('dob').value = '2000-01-01';
+            document.getElementById('birthplace').value = '';
+            document.getElementById('hairtype').selectedIndex = 0;
+            document.getElementById('scalptype').selectedIndex = 0;
+            document.getElementById('skintype').selectedIndex = 0;
+            document.getElementById('other-allergies').value = '';
+
+            // Clean active checkboxes
+            document.querySelectorAll('#step4 input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Clean single inputs
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp-${i}`).value = "";
+            }
+
+            selectGender('female');
+
+            nodes = [];
+
+            // Return to step 1 signin view
+            toggleAuthView('signin');
+            moveStep('step1');
+        }
+    </script>
+</body>
+</html>
